@@ -21,6 +21,7 @@ public class DataFetchService {
     private final RestTemplate restTemplate;
     private final CoinService coinService;
     private final MetricsService metricsService;
+    private final SseService sseService;
 
     public int fetchAndSaveData() {
         List<String> ids = coinService.getAllCoinGeckoIds();
@@ -54,12 +55,15 @@ public class DataFetchService {
                     log.error("Ошибка при обработке монеты {}: {}", data.getSymbol(), e.getMessage());
                 }
             }
+            sseService.sendToAll("data_update", coinService.getCoinsWithMetrics());
+            log.info("Отправка новых данных");
             return successCount;
         } catch (Exception e) {
             log.error("Ошибка при запросе к API", e);
             return 0;
         }
     }
+
     private void processCoinData(CoinGeckoResponse data) {
         String symbol = data.getSymbol().toUpperCase();
         Coin coin = coinService.getCoinBySymbol(symbol);

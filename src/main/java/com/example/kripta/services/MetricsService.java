@@ -43,7 +43,6 @@ public class MetricsService {
 
         BigDecimal currentPrice = latestMetrics.getPrice();
         BigDecimal pastPrice = pastData.get().getPrice();
-        log.info("Coin {}: currentPrice={} at {}, pastPrice={} at {}", coinId, currentPrice, currentTime, pastPrice, pastTime);
         return currentPrice.subtract(pastPrice)
                 .divide(pastPrice, 4, RoundingMode.HALF_UP)
                 .multiply(BigDecimal.valueOf(100));
