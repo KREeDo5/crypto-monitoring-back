@@ -43,7 +43,6 @@ public class MetricsService {
 
         BigDecimal currentPrice = latestMetrics.getPrice();
         BigDecimal pastPrice = pastData.get().getPrice();
-        log.info("Coin {}: currentPrice={} at {}, pastPrice={} at {}", coinId, currentPrice, currentTime, pastPrice, pastTime);
         return currentPrice.subtract(pastPrice)
                 .divide(pastPrice, 4, RoundingMode.HALF_UP)
                 .multiply(BigDecimal.valueOf(100));
@@ -59,9 +58,10 @@ public class MetricsService {
     private long getPeriodSeconds(Period period) {
         return switch (period) {
             case HOUR -> 3600;
+            case HOURS_6 -> 6 * 3600;
             case DAY -> 86400;
-            case WEEK -> 604800;
-            case MONTH -> 2592000;
+            case WEEK -> 7 * 86400;
+            case MONTH -> 30 * 86400;
         };
     }
 }
