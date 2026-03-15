@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 public class DataFetchScheduler {
     private final DataFetchService dataFetchService;
 
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(fixedDelay = 20000)
     public void fetchData() {
         log.info("Обновление данных");
         int count = dataFetchService.fetchAndSaveData();
-        log.info("Обновление завршено. {} монет из 50", count);
+        log.info("Обновление завершено. {} монет из 50", count);
     }
 }
