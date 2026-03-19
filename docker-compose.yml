@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: kripta-db
+    environment:
+      POSTGRES_DB: kripta_db
+      POSTGRES_USER: kripta_user
+      POSTGRES_PASSWORD: kripta_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kripta_user -d kripta_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: kripta-app
+    ports:
+      - "25565:25565"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/kripta_db
+      DB_USERNAME: kripta_user
+      DB_PASSWORD: kripta_pass
+      PORT: 25565
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+
+volumes:
+  pgdata:
